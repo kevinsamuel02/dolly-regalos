@@ -1,27 +1,23 @@
-/* Paleta de Dolly Regalos:
-   Principal (Aqua): #5CBEBF
-   Fondo: #F8F9FA
-   Texto oscuro: #333333
-*/
+/* Paleta: Turquesa #5CBEBF y fondos limpios */
 
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #F8F9FA; /* Gris muy clarito, casi blanco */
+  background-color: #F8F9FA;
   color: #333;
 }
 
 .main-wrapper {
-  padding-bottom: 50px;
+  padding-bottom: 80px; /* Espacio para que no lo tape el botón flotante */
 }
 
-/* Header con el color oficial de Dolly Regalos */
+/* Header */
 .header {
-  background-color: #5CBEBF; /* ¡Tu color! */
+  background-color: #5CBEBF;
   color: #ffffff; 
-  padding: 60px 20px;
+  padding: 50px 20px;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(92, 190, 191, 0.3); /* Sombra turquesa suave */
+  box-shadow: 0 4px 10px rgba(92, 190, 191, 0.3);
 }
 
 .logo-container {
@@ -31,153 +27,134 @@ body {
 }
 
 .logo-img {
-  max-width: 180px;
+  max-width: 150px;
   height: auto;
   border-radius: 50%; 
-  border: 4px solid #ffffff; /* Borde blanco para que despegue del fondo */
+  border: 4px solid #ffffff;
   padding: 5px;
   background-color: white;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.header-title {
-  margin: 0;
-  font-size: 3rem;
-  font-weight: 800;
-  color: #ffffff;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.1); 
-}
+.header-title { margin: 0; font-size: 2.5rem; font-weight: 800; }
+.header-subtitle { margin: 5px 0 15px; font-size: 1.3rem; opacity: 0.9; }
 
-.header-subtitle {
-  margin: 5px 0 15px;
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: #ffffff;
-  opacity: 0.9;
-}
-
-.header-description {
-  max-width: 600px;
-  margin: 0 auto;
-  font-size: 1.1rem;
-  line-height: 1.6;
-}
-
-/* Sección Catálogo */
-.catalogo-container {
-  max-width: 1300px;
-  margin: 50px auto;
-  padding: 0 30px;
-}
-
-.titulo-seccion-container {
+/* Filtros */
+.filtros-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 35px;
-  border-bottom: 2px solid #5CBEBF; /* Línea del color de la marca */
-  padding-bottom: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: -25px auto 40px; /* Lo subimos un poco para que pise el borde del header */
+  background: white;
+  padding: 15px 25px;
+  border-radius: 30px;
+  max-width: fit-content;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 10;
 }
 
-.titulo-seccion {
-  margin: 0;
-  color: #333; 
-  font-size: 2rem;
-  font-weight: 700;
-}
-
-.tag-decorativo {
-  background-color: #5CBEBF;
-  color: #ffffff;
-  padding: 5px 15px;
+.btn-filtro {
+  background: transparent;
+  border: 2px solid #5CBEBF;
+  color: #5CBEBF;
+  padding: 8px 16px;
   border-radius: 20px;
-  font-size: 0.8rem;
   font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
-/* Grid y Tarjetas */
+.btn-filtro:hover { background: #e0f4f4; }
+.btn-filtro.activo { background: #5CBEBF; color: white; }
+
+/* Catálogo */
+.catalogo-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.titulo-seccion { color: #333; font-size: 1.8rem; border-bottom: 2px solid #5CBEBF; padding-bottom: 10px; }
+
 .grid-productos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
 }
 
 .card {
   background: white;
   border-radius: 15px;
   box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid #f1f1f1;
+  border: 1px solid #eee;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-.card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 20px rgba(92, 190, 191, 0.2); /* Sombra turquesa al pasar el mouse */
-}
+.card-img-container { width: 100%; height: 250px; overflow: hidden; }
+.card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+.card:hover .card-img { transform: scale(1.05); }
 
-.card-img-container {
+.card-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+.card-info h4 { margin: 0 0 5px; color: #5CBEBF; font-size: 1.4rem; }
+.categoria-tag { font-size: 0.8rem; background: #eee; color: #666; padding: 3px 8px; border-radius: 10px; width: fit-content; margin-top: 0; margin-bottom: 10px; }
+.card-info p { margin: 0 0 15px; font-size: 0.95rem; flex-grow: 1; }
+
+.btn-agregar {
   width: 100%;
-  height: 280px;
-  overflow: hidden;
-  background-color: #f8f8f8;
-}
-
-.card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; 
-  transition: transform 0.3s ease;
-}
-
-.card:hover .card-img {
-  transform: scale(1.06);
-}
-
-.card-info {
-  padding: 25px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.card-info h4 {
-  margin: 0 0 10px;
-  color: #5CBEBF; /* Título de la tarjeta con tu color */
-  font-size: 1.6rem;
-}
-
-.card-info p {
-  margin: 0;
-  color: #666;
-  font-size: 1rem;
-  line-height: 1.5;
-  flex-grow: 1;
-}
-
-/* Botón WhatsApp alineado a la marca */
-.btn-whatsapp {
-  display: block;
-  width: 100%;
-  background-color: #5CBEBF; /* Botón turquesa */
-  color: white;
-  border: none;
-  padding: 15px;
+  background-color: white;
+  color: #5CBEBF;
+  border: 2px solid #5CBEBF;
+  padding: 10px;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 1.1rem;
   cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s;
+}
+.btn-agregar:hover { background-color: #5CBEBF; color: white; }
+
+/* Carrito Flotante */
+.btn-flotante {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 15px 25px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  z-index: 100;
+  animation: saltito 0.3s ease;
 }
 
-.btn-whatsapp:hover {
-  background-color: #4aa7a8; /* Un tono un poquitito más oscuro para cuando pasás el mouse */
-  transform: scale(1.02);
+@keyframes saltito {
+  0% { transform: translateY(10px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
 }
 
-.btn-whatsapp:active {
-  transform: scale(0.98);
+/* Modal del Carrito */
+.modal-fondo {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 1000;
 }
+
+.modal-contenido {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.modal-contenido h3 { margin-top: 0; color: #5CBEBF; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+.lista-carrito { margin-bottom: 20px; max-height: 200px; overflow-y: auto; }
+.item-carrito { padding: 10px 0; border-bottom: 1px dashed #ccc; font-weight: 500; }
+
+.modal-botones { display: flex; flex-direction: column; gap: 10px; }
+.btn-whatsapp { background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+.btn-cerrar { background: #eee; color: #333; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
