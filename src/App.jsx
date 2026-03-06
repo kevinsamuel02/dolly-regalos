@@ -76,7 +76,8 @@ function App() {
     { codigo: '#C0C0C0', nombre: 'Plateado' },
     { codigo: '#000000', nombre: 'Negro' },
     { codigo: '#FF69B4', nombre: 'Rosa' },
-    { codigo: '#FFFFFF', nombre: 'Blanco' }
+    { codigo: '#FFFFFF', nombre: 'Blanco' },
+    { codigo: '#6e6b6b', nombre: 'Cemento' }
   ];
 
   return (
