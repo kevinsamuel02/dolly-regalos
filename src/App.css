@@ -94,3 +94,52 @@ body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 .modal-botones { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
 .btn-whatsapp { background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 .btn-cerrar { background: #eee; color: #333; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+/* --- NUEVOS ESTILOS DEL CARRITO --- */
+.carrito-acciones {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  background: #f9f9f9;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.btn-cantidad {
+  background: white;
+  color: #5CBEBF;
+  border: 1px solid #5CBEBF;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.btn-cantidad:hover {
+  background: #5CBEBF;
+  color: white;
+}
+
+.btn-eliminar {
+  background: #FF6B6B;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-left: auto; /* Empuja el botón a la derecha */
+  transition: background 0.2s;
+}
+
+.btn-eliminar:hover {
+  background: #e65555;
+}
