@@ -9,14 +9,16 @@ function App() {
   const [carrito, setCarrito] = useState([]);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
+  // Estados del Simulador
   const [productoSimulando, setProductoSimulando] = useState(null);
   const [textoBordado, setTextoBordado] = useState('');
   const [fuenteBordado, setFuenteBordado] = useState("'Dancing Script', cursive");
   const [colorHilo, setColorHilo] = useState('#D4AF37');
   const [cantidadSimulador, setCantidadSimulador] = useState(1);
-  
-  // NUEVO: Estado para guardar el color del producto elegido
   const [colorProducto, setColorProducto] = useState('');
+  
+  // NUEVO: Estado para el logo subido por el cliente
+  const [logoSubido, setLogoSubido] = useState(null);
 
   const categorias = ['Todos', 'Baño', 'Spa', 'Playa', 'Bebés'];
 
@@ -104,7 +106,6 @@ function App() {
           });
 
           const arrayFinal = Object.values(productosAgrupados).map(prod => {
-            // Limpiamos los colores repetidos para que no salgan doble en el selector
             const coloresUnicos = [...new Set(prod.coloresDisponibles)];
             return {
               ...prod,
@@ -127,7 +128,19 @@ function App() {
       });
   }, []);
 
-  // --- LÓGICA DEL CARRITO ACTUALIZADA ---
+  // --- NUEVA LÓGICA: LEER EL ARCHIVO DEL LOGO ---
+  const handleSubirLogo = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader(); // La magia de JS para leer archivos locales
+      reader.onload = (evento) => {
+        setLogoSubido(evento.target.result); // Guardamos la imagen en código base64
+        setTextoBordado(''); // Borramos el texto para que no se pise con el logo
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const agregarAlCarrito = (producto, detallesBordado = null, cantidad = 1, colorElegido = 'A convenir') => {
     if (detallesBordado) {
       const itemPersonalizado = {
@@ -135,11 +148,12 @@ function App() {
         idCarrito: `${producto.id}-${Date.now()}`, 
         cantidad: cantidad,
         bordado: detallesBordado,
-        colorElegido: colorElegido // Guardamos el color del producto!
+        colorElegido: colorElegido
       };
       setCarrito([...carrito, itemPersonalizado]);
       setProductoSimulando(null);
       setTextoBordado('');
+      setLogoSubido(null); // Limpiamos el logo para el próximo
       setCantidadSimulador(1);
     } else {
       const idLiso = `${producto.id}-liso`;
@@ -177,7 +191,11 @@ function App() {
     carrito.forEach(item => {
       textoPedido += `• ${item.cantidad}x ${item.nombre} (Color: ${item.colorElegido})\n`;
       if (item.bordado) {
-        textoPedido += `  ↳ Bordado: "${item.bordado.texto}" | Letra: ${item.bordado.fuente === "'Dancing Script', cursive" ? 'Cursiva' : 'Imprenta'} | Hilo: ${item.bordado.colorNombre}\n`;
+        if (item.bordado.tieneLogo) {
+          textoPedido += `  ↳ Bordado: LOGO PERSONALIZADO (A continuación te adjunto la imagen del logo por acá)\n`;
+        } else {
+          textoPedido += `  ↳ Bordado: "${item.bordado.texto}" | Letra: ${item.bordado.fuente === "'Dancing Script', cursive" ? 'Cursiva' : 'Imprenta'} | Hilo: ${item.bordado.colorNombre}\n`;
+        }
       }
     });
 
@@ -195,14 +213,16 @@ function App() {
     { codigo: '#C0C0C0', nombre: 'Plateado' },
     { codigo: '#000000', nombre: 'Negro' },
     { codigo: '#FF69B4', nombre: 'Rosa' },
-    { codigo: '#FFFFFF', nombre: 'Blanco' }
+    { codigo: '#FFFFFF', nombre: 'Blanco' },
+    { codigo: '#FF5733', nombre: 'Naranja Fuerte' }, 
+    { codigo: '#8E44AD', nombre: 'Violeta Oscuro' },
+    { codigo: '#1ABC9C', nombre: 'Verde Agua' }
   ];
 
-  // Función para abrir el simulador y setear el color inicial
   const abrirSimulador = (producto) => {
     setProductoSimulando(producto);
-    // Seleccionamos por defecto el primer color que haya en stock
     setColorProducto(producto.coloresDisponibles[0] || 'Consultar');
+    setLogoSubido(null);
   };
 
   return (
@@ -271,13 +291,18 @@ function App() {
             
             <div className="simulador-preview">
               <img src={productoSimulando.imagen} alt="Preview" className="simulador-img" />
-              <div className="simulador-texto-flotante" style={{ fontFamily: fuenteBordado, color: colorHilo }}>
-                {textoBordado || 'Tu Nombre'}
-              </div>
+              
+              {/* MAGIA ACÁ: Mostramos el logo o el texto */}
+              {logoSubido ? (
+                <img src={logoSubido} alt="Logo Subido" className="simulador-logo-flotante" />
+              ) : (
+                <div className="simulador-texto-flotante" style={{ fontFamily: fuenteBordado, color: colorHilo }}>
+                  {textoBordado || 'Tu Nombre'}
+                </div>
+              )}
             </div>
 
             <div className="simulador-controles">
-              {/* NUEVO: SELECTOR DE COLOR DEL PRODUCTO */}
               <div className="control-grupo">
                 <label>Color del {productoSimulando.nombre}</label>
                 <select className="control-select" value={colorProducto} onChange={(e) => setColorProducto(e.target.value)}>
@@ -290,27 +315,43 @@ function App() {
                 </select>
               </div>
 
-              <div className="control-grupo">
-                <label>¿Qué le bordamos?</label>
-                <input type="text" className="control-input" placeholder="Ej: Bauti, Feliz Día, etc." value={textoBordado} onChange={(e) => setTextoBordado(e.target.value)} maxLength={15} />
-              </div>
-              
-              <div className="control-grupo">
-                <label>Tipo de Letra</label>
-                <select className="control-select" value={fuenteBordado} onChange={(e) => setFuenteBordado(e.target.value)}>
-                  <option value="'Dancing Script', cursive">Cursiva (Elegante)</option>
-                  <option value="'Montserrat', sans-serif">Imprenta (Moderna)</option>
-                </select>
+              {/* SECCIÓN DE LOGO PROPIO */}
+              <div className="control-grupo" style={{ background: '#f0fafa', padding: '10px', borderRadius: '8px', border: '1px dashed #5CBEBF' }}>
+                <label style={{ color: '#5CBEBF' }}>📷 ¿Querés bordar el logo de tu empresa?</label>
+                <input type="file" accept="image/*" onChange={handleSubirLogo} className="control-input" style={{ fontSize: '0.85rem' }} />
+                {logoSubido && (
+                  <button className="btn-eliminar" style={{ marginTop: '5px' }} onClick={() => setLogoSubido(null)}>
+                    Quitar logo y usar texto
+                  </button>
+                )}
               </div>
 
-              <div className="control-grupo">
-                <label>Color del Hilo</label>
-                <div className="hilos-container">
-                  {opcionesHilos.map(hilo => (
-                    <button key={hilo.codigo} className={`btn-hilo ${colorHilo === hilo.codigo ? 'seleccionado' : ''}`} style={{ backgroundColor: hilo.codigo }} title={hilo.nombre} onClick={() => setColorHilo(hilo.codigo)} />
-                  ))}
-                </div>
-              </div>
+              {/* Controles de texto (se ocultan si hay un logo subido) */}
+              {!logoSubido && (
+                <>
+                  <div className="control-grupo">
+                    <label>¿Qué le bordamos? (Texto)</label>
+                    <input type="text" className="control-input" placeholder="Ej: Bauti, Feliz Día, etc." value={textoBordado} onChange={(e) => setTextoBordado(e.target.value)} maxLength={15} />
+                  </div>
+                  
+                  <div className="control-grupo">
+                    <label>Tipo de Letra</label>
+                    <select className="control-select" value={fuenteBordado} onChange={(e) => setFuenteBordado(e.target.value)}>
+                      <option value="'Dancing Script', cursive">Cursiva (Elegante)</option>
+                      <option value="'Montserrat', sans-serif">Imprenta (Moderna)</option>
+                    </select>
+                  </div>
+
+                  <div className="control-grupo">
+                    <label>Color del Hilo</label>
+                    <div className="hilos-container">
+                      {opcionesHilos.map(hilo => (
+                        <button key={hilo.codigo} className={`btn-hilo ${colorHilo === hilo.codigo ? 'seleccionado' : ''}`} style={{ backgroundColor: hilo.codigo }} title={hilo.nombre} onClick={() => setColorHilo(hilo.codigo)} />
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
               
               <div className="control-grupo" style={{marginTop: '10px'}}>
                 <label>Cantidad de unidades iguales:</label>
@@ -319,8 +360,12 @@ function App() {
             </div>
 
             <div className="modal-botones">
-              {/* Le pasamos el colorProducto elegido a la función */}
-              <button className="btn-simular" onClick={() => agregarAlCarrito(productoSimulando, { texto: textoBordado || 'Sin texto', fuente: fuenteBordado, colorNombre: opcionesHilos.find(h => h.codigo === colorHilo).nombre }, cantidadSimulador, colorProducto)}>
+              <button className="btn-simular" onClick={() => agregarAlCarrito(productoSimulando, { 
+                texto: logoSubido ? 'Logo Personalizado' : (textoBordado || 'Sin texto'), 
+                tieneLogo: !!logoSubido, // Booleano para saber si lleva foto
+                fuente: fuenteBordado, 
+                colorNombre: logoSubido ? 'Varios' : opcionesHilos.find(h => h.codigo === colorHilo).nombre 
+              }, cantidadSimulador, colorProducto)}>
                 Sumar al pedido con este diseño
               </button>
               <button className="btn-cerrar" onClick={() => setProductoSimulando(null)}>Cancelar</button>
@@ -343,14 +388,13 @@ function App() {
             <div className="lista-carrito">
               {carrito.map((item) => (
                 <div key={item.idCarrito} className="item-carrito">
-                  {/* Ahora mostramos el color elegido en el título del carrito */}
                   <div style={{fontWeight: 'bold', fontSize: '1.1rem'}}>
                     {item.nombre} <span style={{fontWeight: 'normal', fontSize: '0.9rem', color: '#666'}}>- Color: {item.colorElegido}</span>
                   </div>
                   
                   {item.bordado && (
-                    <div style={{ fontSize: '0.85rem', color: '#666', marginBottom: '5px' }}>
-                      ↳ Bordado: "{item.bordado.texto}" ({item.bordado.colorNombre})
+                    <div style={{ fontSize: '0.85rem', color: item.bordado.tieneLogo ? '#5CBEBF' : '#666', marginBottom: '5px', fontWeight: item.bordado.tieneLogo ? 'bold' : 'normal' }}>
+                      {item.bordado.tieneLogo ? '↳ Bordado: Logo Personalizado' : `↳ Bordado: "${item.bordado.texto}" (${item.bordado.colorNombre})`}
                     </div>
                   )}
                   
